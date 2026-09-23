@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Sign in · Labframe Manager</title>
+    <link rel="icon" href="{{basePath}}/auth/manager-mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{basePath}}/auth/login.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="{{basePath}}/" aria-label="Labframe management home">
+        <img src="{{basePath}}/auth/manager-mark.svg" alt="" width="31" height="31" />
+        <span> Labframe<span class="brand-divider">/</span><strong>Management</strong> </span>
+      </a>
+    </header>
+    <main>
+      <section class="login-card" aria-labelledby="login-heading">
+        <p class="eyebrow">Operations console</p>
+        <h1 id="login-heading">Sign in to Manager</h1>
+        <p class="description">Enter the Manager password to continue.</p>
+        <form action="{{basePath}}/auth/login" method="post">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            aria-describedby="login-error"
+            required
+          />
+          <p class="login-error" id="login-error" role="alert">{{errorMessage}}</p>
+          <button type="submit">Sign in</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "listen": "http://localhost:3005",
+  "basePath": "/console",
+  "onlyOffice": { "documentServerUrl": "http://127.0.0.1" },
+  "telemetry": { "collectorOrigin": "http://127.0.0.1:4318" },
+  "queryConfigFile": "C:\\ProgramData\\LabframeManager\\telemetry-targets.json",
+  "authentication": {
+    "secretsFile": "~/.labframe/secrets.json",
+    "passwordSecret": "management.password",
+    "publicOrigin": "http://localhost:3005",
+    "policy": {
+      "sessionLifetimeSeconds": 28800,
+      "maximumSessions": 256,
+      "attemptWindowMilliseconds": 60000,
+      "maximumAttemptsPerWindow": 30,
+      "maximumConcurrentAuthentications": 2
+    }
+  },
+  "onlyOfficeNativeProbe": {
+    "kind": "windows",
+    "installationRoot": "C:\\Program Files\\ONLYOFFICE\\DocumentServer"
+  }
+}

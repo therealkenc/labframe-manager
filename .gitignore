@@ -1,0 +1,7 @@
+node_modules/
+dist/
+web/assets/
+build/
+tmp/
+*.tsbuildinfo
+config/*.local.json
