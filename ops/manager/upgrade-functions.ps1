@@ -1,4 +1,5 @@
 Set-StrictMode -Version Latest
+. (Join-Path $PSScriptRoot 'configuration.ps1')
 
 $script:ManagerUpgradePolicy = @{
     ServiceTimeoutSeconds = 45
@@ -27,7 +28,10 @@ function Get-ManagerPreservedServices {
 function Assert-ManagerPreservedState {
     param([hashtable]$Context)
     foreach ($file in $Context.Files) {
-        if ((Get-FileHash -LiteralPath $file.Path).Hash -ne $file.Hash -or
+        $expectedHash = if ($file.Path -ieq $Context.Configuration.Path) {
+            $Context.Configuration[$Context.Configuration.Active].Hash
+        } else { $file.Hash }
+        if ((Get-FileHash -LiteralPath $file.Path).Hash -ne $expectedHash -or
             (Get-Acl -LiteralPath $file.Path).Sddl -cne $file.Acl) {
             throw "Configuration bytes or access changed during Manager upgrade: $($file.Path)"
         }
@@ -122,6 +126,8 @@ function Get-ManagerUpgradeContext {
         Files = @(Get-ManagerConfigurationFiles -Path $installed.configurationPath -Configuration $configuration)
         PreservedNames = $PreservedServices
         Services = @(Get-ManagerPreservedServices -Names $PreservedServices) }
+    $context.Configuration = New-ManagerConfigurationTransition -Path $installed.configurationPath `
+        -StateRoot $state -Executable (Join-Path $release $policy.ReleaseExecutable)
     $null = Test-ManagerInstalledHealth -Context $context -InstallRoot $installed.installRoot
     $context
 }
@@ -228,6 +234,8 @@ function Set-ManagerInstalledRelease {
     if (Get-NetTCPConnection -LocalPort $Context.Port -State Listen -ErrorAction SilentlyContinue) {
         throw 'Manager listener did not release after stop; no process was killed.'
     }
+    $selection = if ($InstallRoot -ieq $Context.Installed.installRoot) { 'Original' } else { 'Candidate' }
+    Set-ManagerConfiguration -Transition $Context.Configuration -Selection $selection
     Invoke-WindowsServiceControl -Arguments @('config', $Context.Policy.ServiceName, 'binPath=',
         ('"' + (Join-Path $InstallRoot $Context.Policy.WrapperFileName) + '"')) | Out-Null
     Start-Service -Name $Context.Policy.ServiceName
@@ -253,7 +261,7 @@ function Invoke-ManagerUpgrade {
         StartedAt = [DateTime]::UtcNow.ToString('o'); Status = 'preparing'
         Previous = $Context.Installed; CandidateBuild = $Context.Candidate.build
         CandidateRoot = (New-ManagerInstallPath -Context $Context)
-        Files = $Context.Files; Services = $Context.Services }
+        Files = $Context.Files; Services = $Context.Services; Configuration = $Context.Configuration }
     Save-ManagerUpgradeRecord -Record $record
     Write-Host "Manager upgrade receipt: $($record.Path)"
     $switched = $false

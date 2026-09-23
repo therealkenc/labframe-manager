@@ -5,6 +5,7 @@ const DEPLOYMENT_FILES = {
   manager: [
     'upgrade.ps1',
     'upgrade-functions.ps1',
+    'configuration.ps1',
     'install.ps1',
     'tooling.ps1',
     'policy.psd1',

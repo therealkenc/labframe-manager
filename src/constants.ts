@@ -2,6 +2,7 @@ export const MANAGEMENT_SERVICE_NAME = 'labframe-manager';
 export const MANAGEMENT_SERVICE_INFO_PATH = '/api/service-info';
 export const CONFIG_PATH_ARGUMENT_INDEX = 2;
 export const MANAGEMENT_CONFIG_OPTION = '--config';
+export const MANAGEMENT_VALIDATE_CONFIG_OPTION = '--validate-config';
 export const MANAGEMENT_CONFIG_ARGUMENT_COUNT = 2;
 export const SERVER_SHUTDOWN_TIMEOUT_MILLISECONDS = 15_000;
 export const TELEMETRY_REQUEST_BYTES = 64 * 1_024;

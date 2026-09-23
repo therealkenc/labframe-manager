@@ -29,10 +29,14 @@ password gate remains mandatory; configuration contains only its secret key name
 Do not put credential values in this repository.
 
 `onlyOffice.documentServerUrl` and `telemetry.collectorOrigin` are Manager's own
-settings. Migrating the former in-tree deployment means copying those two settings
-from the old referenced application JSON and removing `applicationConfigFile`.
-Prepare that candidate configuration with the site deployment plan; the new runtime
-does not read the old shape or depend on Labframe being present.
+settings. The artifact-owned upgrade copies those two settings from the old
+referenced application JSON, preserves existing explicit values and removes
+`applicationConfigFile`. It validates the candidate before stopping Manager and
+restores the original configuration if the new release fails acceptance. The new
+runtime does not read the old shape or depend on Labframe being present.
+
+`node dist/main.js --validate-config <path>` (or the packaged executable with the
+same option) validates configuration without opening secrets or starting a listener.
 
 Native Windows ONLYOFFICE inspection can be disabled with
 `"onlyOfficeNativeProbe": { "kind": "disabled" }`. Remote health observation remains

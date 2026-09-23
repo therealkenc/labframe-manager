@@ -9,23 +9,28 @@ pwsh -File C:\Releases\labframe-manager-0.1.0-alpha.1\deploy\ops\manager\upgrade
 
 The command derives the candidate release from its own artifact directory. Its
 default state directory is `C:\ProgramData\LabframeManager`; supply `-StateRoot`
-for another installation. `-CheckOnly` performs the same read-only preflight.
+for another installation. `-CheckOnly` performs the same preflight without changing
+installed configuration or services. Its temporary candidate configuration is removed.
 From a checkout, add `-ReleasePath` pointing at the reviewed portable artifact.
 
 Upgrade verifies the complete candidate and installed inventories, pinned WinSW,
 current service identity, health, and authentication gate before stopping anything.
 It stages a new release beside the installed one, changes only Manager's service
 binary path, starts it, and verifies that the healthy HTTP listener belongs to the
-selected executable under the same service account. Configuration bytes, secret
-bytes and their ACLs are checked before and after; they are never rewritten.
+selected executable under the same service account. It applies the artifact's
+configuration transition only after Manager stops, preserving the configuration ACL.
+Secret/query-target bytes and their ACLs are checked before and after and remain
+unchanged.
 Existing SCM registration, startup policy and recovery settings remain intact.
 
 `Labframe`, `Welcome` and `Caddy` are the default independent services checked for
 unchanged state, process, account and command. Supply `-PreservedServices` if the
-host uses other names. The command creates no temporary scripts or configuration.
+host uses other names. Candidate configuration is validated in a unique scratch
+directory under `StateRoot\deploy`; that invocation's scratch is cleaned in `finally`.
 Durable receipts live in `StateRoot\upgrade-history`; release directories remain
-available for inspection. A failed switch automatically restores the prior
-authenticated Manager and checks it again. The command still exits nonzero so a
+available for inspection. Receipts retain original/candidate configuration bytes,
+hashes and the original ACL. A failed switch restores the exact original bytes
+before restarting the prior authenticated Manager and checking it again. The command still exits nonzero so a
 failed upgrade cannot be mistaken for success. Sessions are cleared by the normal
 Manager restart. Labframe and its background work continue running.
 
@@ -138,11 +143,18 @@ work at the configured public origin. Caddy publication is a separate deployment
 step. Installation does not change Labframe, ONLYOFFICE, telemetry, SQL, firewall,
 certificates, or secret values; it applies access permissions to the selected bag.
 
-The extraction from Labframe changes the configuration schema. Prepare the new
-explicit endpoint fields in the site deployment plan before this version starts;
-remove `applicationConfigFile`. The upgrade command deliberately preserves
-configuration bytes and does not infer values from another application's config.
-Configuration replacement and recovery belong to the enclosing site deployment.
+The extraction from Labframe changes the configuration schema. The artifact-owned
+`configuration.ps1` transition copies only `onlyOffice.documentServerUrl` and
+`telemetry.collectorOrigin` from the previously selected `applicationConfigFile`,
+preserves any already-explicit Manager endpoint values, and removes the reference.
+All other Manager settings remain unchanged. Configuration already using the new
+shape remains byte-identical. Manager's runtime has no compatibility reader.
+
+The candidate executable's `--validate-config <path>` checks its own strict schema
+without starting a listener or opening secrets/query targets. Validation failure
+leaves the running service and live configuration untouched. Configuration changes
+outside the upgrade are rejected rather than overwritten; matching old/new bytes
+and the original ACL remain the recovery boundary.
 
 In a checkout the product scripts resolve shared mechanics from the installed
 `@therealkenc/release-tools` dependency. In a release they use the matching files

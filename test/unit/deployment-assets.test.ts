@@ -28,6 +28,7 @@ test('Manager artifact owns its upgrade and installer commands with working rela
     await access(resolve(dirname(command), '../windows-service/install-service.ps1'));
     await access(resolve(dirname(command), '../windows-service/service.xml.template'));
     await access(resolve(dirname(command), 'upgrade-functions.ps1'));
+    await access(resolve(dirname(command), 'configuration.ps1'));
     assert.ok(!assets.some((asset: ReleaseAssets) => asset.source.endsWith('test-upgrade.ps1')));
   } finally {
     assert.equal(dirname(directory), parent);
