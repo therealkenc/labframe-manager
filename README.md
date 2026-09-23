@@ -42,7 +42,18 @@ selected through `queryConfigFile`.
 ## Releases
 
 `pnpm release` builds a portable Node executable artifact using the shared release
-toolkit. Run `pnpm release --help` for the release arguments. Each artifact includes
+toolkit. For example, with the matching Node 26 Windows runtime and its license:
+
+```powershell
+pnpm release --version 0.1.0-alpha.1 `
+  --output build/releases/labframe-manager-0.1.0-alpha.1 `
+  --node 'C:/Program Files/nodejs/node.exe' `
+  --node-license C:/Tools/node-v26.8.2-LICENSE
+pnpm test:artifact build/releases/labframe-manager-0.1.0-alpha.1
+```
+
+The output directory must be new. A source commit is required for release identity.
+Each artifact includes
 its matching product hooks under `deploy/ops/manager` and shared installation
 mechanics under `deploy/ops/windows-service`. Installation consumes that artifact;
 it does not build or pull source.
@@ -63,3 +74,13 @@ configuration, process lifecycle, and artifact deployment assets.
 `pwsh -NoProfile -File ops/manager/test-upgrade.ps1` exercises upgrade success,
 rollback, idempotence and failure paths with isolated fixtures. It does not install,
 stop, or start a real Windows service.
+
+`pnpm test:artifact <release-directory>` copies the artifact under an isolated
+`build/deploy` directory, checks its executable build identity from a different
+working directory, and starts it on an available loopback port with a generated
+test password bag. It verifies health, anonymous API rejection, sign-in, dashboard
+and bundled frontend assets, then terminates that test process. Logs stay with the
+proof directory. No installed configuration or service is changed.
+
+The initial extraction passed all 72 unit tests, strict checks, the Windows
+upgrade/recovery fixtures, and this relocated executable smoke on 2026-09-22.

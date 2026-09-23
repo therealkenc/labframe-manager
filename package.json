@@ -21,7 +21,8 @@
     "release": "pnpm build && node dist/release/main.js",
     "start": "node dist/main.js",
     "test": "pnpm test:unit",
-    "test:unit": "tsx --test test/unit/*.test.ts"
+    "test:unit": "tsx --test test/unit/*.test.ts",
+    "test:artifact": "tsx test/integration/artifact-smoke.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
