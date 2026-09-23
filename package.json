@@ -2,7 +2,7 @@
   "name": "labframe-manager",
   "description": "Independent Labframe host management control plane",
   "type": "module",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.5",
   "private": true,
   "files": [
     "dist",

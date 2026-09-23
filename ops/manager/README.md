@@ -4,7 +4,7 @@ For an existing authenticated Manager installation, use the command shipped
 inside the new portable release, from an elevated PowerShell 7 session:
 
 ```powershell
-pwsh -File C:\Releases\labframe-manager-0.1.0-alpha.1\deploy\ops\manager\upgrade.ps1
+pwsh -File C:\Releases\labframe-manager-0.1.0-alpha.5\deploy\ops\manager\upgrade.ps1
 ```
 
 The command derives the candidate release from its own artifact directory. Its

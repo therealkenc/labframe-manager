@@ -49,11 +49,11 @@ selected through `queryConfigFile`.
 toolkit. For example, with the matching Node 26 Windows runtime and its license:
 
 ```powershell
-pnpm release --version 0.1.0-alpha.1 `
-  --output build/releases/labframe-manager-0.1.0-alpha.1 `
+pnpm release --version 0.1.0-alpha.5 `
+  --output build/releases/labframe-manager-0.1.0-alpha.5 `
   --node 'C:/Program Files/nodejs/node.exe' `
   --node-license C:/Tools/node-v26.8.2-LICENSE
-pnpm test:artifact build/releases/labframe-manager-0.1.0-alpha.1
+pnpm test:artifact build/releases/labframe-manager-0.1.0-alpha.5
 ```
 
 The output directory must be new. A source commit is required for release identity.
