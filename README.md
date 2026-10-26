@@ -52,7 +52,7 @@ toolkit. For example, with the matching Node 26 Windows runtime and its license:
 pnpm release --version 0.1.0-alpha.5 `
   --output build/releases/labframe-manager-0.1.0-alpha.5 `
   --node 'C:/Program Files/nodejs/node.exe' `
-  --node-license C:/Tools/node-v26.8.2-LICENSE
+  --node-license C:/Tools/node-v26.12.1-LICENSE
 pnpm test:artifact build/releases/labframe-manager-0.1.0-alpha.5
 ```
 
