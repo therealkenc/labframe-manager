@@ -145,8 +145,8 @@ function Test-ManagerInstalledHealth {
     if ($health.status -ne 'ok' -or $health.service -ne $Context.Policy.ReleaseProduct) {
         throw 'Manager health did not report ready.'
     }
-    $listeners = @(Get-NetTCPConnection -LocalPort $Context.Port -State Listen)
-    $owners = @($listeners.OwningProcess | Select-Object -Unique)
+    $listeners = @(Get-ServiceBoundTcpEndpoints -Port $Context.Port)
+    $owners = @($listeners | Select-Object -ExpandProperty OwningProcess -Unique)
     if ($owners.Count -ne 1) { throw 'Manager listener has an unexpected process owner.' }
     $process = Get-CimInstance Win32_Process -Filter "ProcessId=$($owners[0])"
     if ($process.ExecutablePath -ine (Join-Path $InstallRoot $Context.Policy.ReleaseExecutable) -or
@@ -231,7 +231,7 @@ function Set-ManagerInstalledRelease {
     Stop-Service -Name $Context.Policy.ServiceName -NoWait
     (Get-Service -Name $Context.Policy.ServiceName).WaitForStatus(
         'Stopped', [TimeSpan]::FromSeconds($script:ManagerUpgradePolicy.ServiceTimeoutSeconds))
-    if (Get-NetTCPConnection -LocalPort $Context.Port -State Listen -ErrorAction SilentlyContinue) {
+    if (Get-ServiceBoundTcpEndpoints -Port $Context.Port) {
         throw 'Manager listener did not release after stop; no process was killed.'
     }
     $selection = if ($InstallRoot -ieq $Context.Installed.installRoot) { 'Original' } else { 'Candidate' }

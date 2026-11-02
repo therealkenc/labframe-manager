@@ -15,6 +15,9 @@ From a checkout, add `-ReleasePath` pointing at the reviewed portable artifact.
 
 Upgrade verifies the complete candidate and installed inventories, pinned WinSW,
 current service identity, health, and authentication gate before stopping anything.
+Its ownership proof pairs healthy HTTP with the unique bound local TCP endpoint,
+the exact executable and its SCM wrapper parent/account. It does not trust the TCP
+State field alone: win11vm has reported healthy listeners as Closed or absent.
 It stages a new release beside the installed one, changes only Manager's service
 binary path, starts it, and verifies that the healthy HTTP listener belongs to the
 selected executable under the same service account. It applies the artifact's
@@ -22,6 +25,13 @@ configuration transition only after Manager stops, preserving the configuration 
 Secret/query-target bytes and their ACLs are checked before and after and remain
 unchanged.
 Existing SCM registration, startup policy and recovery settings remain intact.
+
+Focused source tooling checks (no installed service changes):
+
+```powershell
+pwsh -NoProfile -File ops/manager/test-upgrade.ps1
+pwsh -NoProfile -File ops/manager/test-ownership.ps1
+```
 
 `Labframe`, `Welcome` and `Caddy` are the default independent services checked for
 unchanged state, process, account and command. Supply `-PreservedServices` if the
