@@ -97,9 +97,9 @@ function New-ProofContext {
     $transition = New-ManagerConfigurationTransition -Path $configurationPath -StateRoot $state `
         -Executable (Join-Path $root 'portable/labframe-manager.exe')
     @{ StateRoot = $state; ReleasePath = (Join-Path $root 'portable')
-        Installed = @{ installRoot = $installedRoot; build = @{ buildId = 'old'; version = '0.1.0-alpha.3' }
+        Installed = @{ installRoot = $installedRoot; build = @{ buildId = 'old'; version = '0.1.0-alpha.5' }
             installedAt = ''; started = $true; releaseManifestSha256 = '' }
-        Candidate = @{ build = @{ buildId = 'new'; version = '0.1.0-alpha.4' } }
+        Candidate = @{ build = @{ buildId = 'new'; version = '0.6.1' } }
         Configuration = $transition
         Files = @(); Services = @(); Policy = @{ ReleaseManifestFileName = 'release.json' } }
 }

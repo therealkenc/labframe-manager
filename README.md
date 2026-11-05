@@ -45,15 +45,21 @@ selected through `queryConfigFile`.
 
 ## Releases
 
+Version 0.6.1 begins ordinary 0.x versioning after alpha.5. Compatible changes
+increment the patch; incompatible configuration or contract changes increment
+the minor version. This release includes the Node 26 dependency refresh and
+Windows ownership checks that tolerate unreliable TCP State reporting while
+still requiring the exact service process and authenticated HTTP boundary.
+
 `pnpm release` builds a portable Node executable artifact using the shared release
 toolkit. For example, with the matching Node 26 Windows runtime and its license:
 
 ```powershell
-pnpm release --version 0.1.0-alpha.5 `
-  --output build/releases/labframe-manager-0.1.0-alpha.5 `
+pnpm release --version 0.6.1 `
+  --output build/releases/labframe-manager-0.6.1 `
   --node 'C:/Program Files/nodejs/node.exe' `
-  --node-license C:/Tools/node-v26.12.1-LICENSE
-pnpm test:artifact build/releases/labframe-manager-0.1.0-alpha.5
+  --node-license C:/Tools/node-v26.13.0-LICENSE
+pnpm test:artifact build/releases/labframe-manager-0.6.1
 ```
 
 The output directory must be new. A source commit is required for release identity.
